@@ -8,10 +8,17 @@ group="$(id -ng)"
 uid=$(id -u)
 gid=$(id -g)
 
+upsert_group()
+{
+    local gid="$1"
+    local group="$2"
+    echo "getent group $gid && groupmod --new-name $group \$(getent group $gid | cut -f 1 -d :) || groupadd -gid $gid $group"
+}
+
 if [[ $(uname -s) = Linux ]]; then
     outer_docker_gid=$(getent group $gid | cut -f 1 -d :)
     docker_in_docker="
-RUN getent group $outer_docker_gid && groupmod --new-name docker_in_docker $(getent group $gid | cut -f 1 -d :) || groupadd -gid $outer_docker_gid docker_in_docker
+RUN $(upsert_group $outer_docker_gid docker_in_docker)
 RUN usermod -aG docker_in_docker $user"
 else
     # FIXME: No docs behind this magical group -- may change with Docker for Mac beta...
@@ -33,7 +40,7 @@ cat > "$user_docker_dir/Dockerfile" <<EOF
 FROM $root_docker
 
 RUN getent group $group && groupdel $group || true
-RUN getent group $gid && groupmod --new-name $group \$(getent group $gid | cut -f 1 -d :) || groupadd --gid $gid $group
+RUN $(upsert_group $gid $group)
 RUN useradd $user -u $uid -g $gid
 
 $docker_in_docker
