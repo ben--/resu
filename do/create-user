@@ -16,7 +16,7 @@ upsert_group()
 }
 
 if [[ $(uname -s) = Linux ]]; then
-    outer_docker_gid=$(getent group $gid | cut -f 1 -d :)
+    outer_docker_gid=$(getent group docker | cut -f 3 -d :)
     docker_in_docker="
 RUN $(upsert_group $outer_docker_gid docker_in_docker)
 RUN usermod -aG docker_in_docker $user"
