@@ -4,4 +4,4 @@ services:
   - docker
 
 script:
-  - do/build
+  - do/all
