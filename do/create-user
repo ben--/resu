@@ -1,0 +1,34 @@
+#!/bin/bash -eu
+set -o pipefail
+
+do_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+user="$(id -nu)"
+group="$(id -ng)"
+uid=$(id -u)
+gid=$(id -g)
+
+root_docker="$1"
+user_docker="$1-user"
+
+user_docker_dir="$do_dir/.mkdo-$user_docker"
+if [[ -e "$user_docker_dir" ]]; then
+    rm -rf "$user_docker_dir"
+fi
+mkdir "$user_docker_dir"
+
+cat > "$user_docker_dir/Dockerfile" <<EOF
+FROM $root_docker
+
+RUN getent group $group && groupdel $group || true
+RUN getent group $gid && groupmod --new-name $group \$(getent group $gid | cut -f 1 -d :) || groupadd --gid $gid $group
+RUN useradd $user -u $uid -g $gid
+
+USER $user
+EOF
+
+echo -n "User Docker: "
+docker build \
+       --force-rm --rm=true \
+       -t "$user_docker" \
+       "$user_docker_dir"

@@ -1,0 +1,8 @@
+#!/bin/bash
+
+base_cmd="$1"
+full_cmd="do/$1"
+shift
+
+git ls-files -co --exclude-standard . | grep -v "^$base_cmd\$" \
+    | entr -d "$full_cmd" "$@"
