@@ -1,0 +1,23 @@
+#!/bin/bash -eu
+set -o pipefail
+
+DOCKER_IMAGE=${1-resu-build}
+source_dir="$(dirname "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)")"
+
+#if [[ $(uname -s) = Darwin ]]; then
+#    if [[ $(docker-machine status) = Stopped ]]; then
+#        docker-machine start
+#    fi
+#    eval $(docker-machine env)
+#fi
+
+docker run -it \
+       --env DOCKER_CONTAINER=$DOCKER_IMAGE \
+       --env "source_dir=$source_dir" \
+       --rm \
+       --sig-proxy=true \
+       --volume=/var/run/docker.sock:/var/run/docker.sock:rw \
+       --volume="$source_dir:$source_dir:rw" \
+       --workdir="$source_dir" \
+       $DOCKER_IMAGE-user \
+       /bin/bash

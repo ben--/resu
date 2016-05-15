@@ -24,6 +24,11 @@ RUN getent group $group && groupdel $group || true
 RUN getent group $gid && groupmod --new-name $group \$(getent group $gid | cut -f 1 -d :) || groupadd --gid $gid $group
 RUN useradd $user -u $uid -g $gid
 
+#FIXME
+RUN getent group 50 || true
+RUN groupadd --gid 50 docker_in_docker
+RUN usermod -aG docker_in_docker $user
+
 USER $user
 EOF
 
