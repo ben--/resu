@@ -25,7 +25,7 @@ fi
 mkdir "$user_docker_dir"
 
 if [[ ${2-} = --with-docker ]]; then
-    docker_version=$(docker info | sed -n 's/^Server Version: //p')
+    docker_version=$(docker version --format '{{.Server.Version}}')
 
     cat > "$user_docker_dir/docker.list" <<EOF
 deb https://apt.dockerproject.org/repo debian-jessie main
