@@ -29,7 +29,7 @@ if [[ $DOCKER_IMAGE != ${DOCKER_CONTAINER-} ]]; then
            -t "$DOCKER_IMAGE" \
            "$source_dir/do/test-docker"
 
-    "$source_dir/do/create-user" "$DOCKER_IMAGE"
+    "$source_dir/do/create-user" "$DOCKER_IMAGE" --with-docker
 
     output_dir="${source_dir}/test"
     if [[ -e "$output_dir" ]]; then

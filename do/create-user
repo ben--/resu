@@ -15,18 +15,6 @@ upsert_group()
     echo "getent group $gid && groupmod --new-name $group \$(getent group $gid | cut -f 1 -d :) || groupadd --gid $gid $group"
 }
 
-if [[ $(uname -s) = Linux ]]; then
-    outer_docker_gid=$(getent group docker | cut -f 3 -d :)
-    docker_in_docker="
-RUN $(upsert_group $outer_docker_gid docker_in_docker)
-RUN usermod -aG docker_in_docker $user"
-else
-    # FIXME: No docs behind this magical group -- may change with Docker for Mac beta...
-    docker_in_docker="
-RUN groupadd --gid 50 docker_in_docker
-RUN usermod -aG docker_in_docker $user"
-fi
-
 root_docker="$1"
 user_docker="$1-user"
 
@@ -36,6 +24,41 @@ if [[ -e "$user_docker_dir" ]]; then
 fi
 mkdir "$user_docker_dir"
 
+if [[ ${2-} = --with-docker ]]; then
+    docker_version=$(docker info | sed -n 's/^Server Version: //p')
+
+    cat > "$user_docker_dir/docker.list" <<EOF
+deb https://apt.dockerproject.org/repo debian-jessie main
+EOF
+    docker_in_docker="
+RUN apt-get update \
+ && apt-get install -y --no-install-recommends \
+        apt-transport-https \
+        ca-certificates \
+ && apt-key adv \
+        --keyserver hkp://p80.pool.sks-keyservers.net:80 \
+        --recv-keys 58118E89F3A912897C070ADBF76221572C52609D \
+
+COPY docker.list /etc/apt/sources.list.d/docker.list
+
+RUN apt-get update \
+ && apt-cache policy docker-engine \
+ && apt-get install -y --no-install-recommends \
+        docker-engine=\$(apt-cache madison docker-engine | awk '{print \$3}' | grep $docker_version)
+"
+    if [[ $(uname -s) = Linux ]]; then
+        outer_docker_gid=$(getent group docker | cut -f 3 -d :)
+        docker_in_docker="$docker_in_docker
+RUN $(upsert_group $outer_docker_gid docker_in_docker)
+RUN usermod -aG docker_in_docker $user"
+    else
+        # FIXME: No docs behind this magical group -- may change with Docker for Mac beta...
+        docker_in_docker="$docker_in_docker
+RUN groupadd --gid 50 docker_in_docker
+RUN usermod -aG docker_in_docker $user"
+    fi
+fi
+
 cat > "$user_docker_dir/Dockerfile" <<EOF
 FROM $root_docker
 
@@ -43,7 +66,7 @@ RUN getent group $group && groupdel $group || true
 RUN $(upsert_group $gid $group)
 RUN useradd $user --uid $uid --gid $gid
 
-$docker_in_docker
+${docker_in_docker-}
 
 USER $user
 EOF
