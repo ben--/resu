@@ -24,4 +24,4 @@ ADD resu /sbin/resu
 
 @then(u'the command exits with an error code')
 def step_impl(context):
-    raise NotImplementedError(u'STEP: Then the command exits with an error code')
+    assert 0 != context.returncode
