@@ -32,7 +32,11 @@ if [[ $DOCKER_IMAGE != ${DOCKER_CONTAINER-} ]]; then
     fi
     mkdir "$output_dir"
 
-    docker run \
+    tty=
+    if [[ -t 1 ]]; then
+        tty=-t
+    fi
+    docker run $tty \
            --env DOCKER_CONTAINER=$DOCKER_IMAGE \
            --env "source_dir=$source_dir" \
            --rm \
