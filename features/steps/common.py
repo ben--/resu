@@ -6,6 +6,7 @@ import subprocess as sp
 @given(u'a docker with resu and tini')
 def step_impl(context):
     docker_name = 'resu-testrun-docker'
+    shutil.rmtree(docker_name, ignore_errors=True)
     os.mkdir(docker_name)
     shutil.copy('../build/resu', os.path.join(docker_name, 'resu'))
     with open(os.path.join(docker_name, 'Dockerfile'), 'w') as f:
@@ -25,3 +26,7 @@ ADD resu /sbin/resu
 @then(u'the command exits with an error code')
 def step_impl(context):
     assert 0 != context.returncode
+
+@then(u'the command exits without error')
+def step_impl(context):
+    assert 0 == context.returncode
