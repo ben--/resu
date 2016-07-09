@@ -27,9 +27,16 @@ mkdir "$user_docker_dir"
 if [[ ${2-} = --with-docker ]]; then
     docker_version=$(docker version --format '{{.Server.Version}}')
 
-    cat > "$user_docker_dir/docker.list" <<EOF
+    if [[ "${docker_version}" =~ -rc[0-9]+$ ]]; then
+        docker_version=$(echo "$docker_version" | sed -e 's/-/~/')
+        cat > "$user_docker_dir/docker.list" <<EOF
+deb https://apt.dockerproject.org/repo debian-jessie testing
+EOF
+    else
+        cat > "$user_docker_dir/docker.list" <<EOF
 deb https://apt.dockerproject.org/repo debian-jessie main
 EOF
+    fi
     docker_in_docker="
 RUN apt-get update \
  && apt-get install -y --no-install-recommends \
