@@ -10,6 +10,8 @@ int main(int argc, char **argv)
     }
 
     execvp(argv[3], argv+3);
+
+    fprintf(stderr, "not found");
     return 1;
     (void) argc;
     (void) argv;

@@ -14,4 +14,9 @@ Feature: resu changes the user when running commands
         When the user runs "resu nobody -- false"
         Then the command exits with an error code
 
-    # command not found
+    Scenario: resu prints and returns an error when the command is not found
+        When the user runs "resu nobody -- unknown"
+        Then a "not found" error message is printed
+        And the command exits with an error code
+
+    # command not executable

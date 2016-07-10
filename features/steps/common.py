@@ -31,6 +31,10 @@ ADD resu /sbin/resu
     assert 0 == sp.call(['docker', 'build', '-t', docker_name, docker_name])
     context.docker_name = docker_name
 
+@then(u'a "{}" error message is printed')
+def step_impl(context, expected_error):
+    context.stderr.should.contain(expected_error)
+
 @then(u'the command exits with an error code')
 def step_impl(context):
     assert 0 != context.returncode
