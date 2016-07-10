@@ -11,7 +11,7 @@ int main(int argc, char **argv)
 
     execvp(argv[3], argv+3);
 
-    perror(NULL);
+    perror("resu");
     return 1;
     (void) argc;
     (void) argv;

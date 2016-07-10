@@ -16,10 +16,10 @@ Feature: resu changes the user when running commands
 
     Scenario: resu prints and returns an error when the command is not found
         When the user runs "resu nobody -- unknown"
-        Then a "No such file or directory" error message is printed
+        Then a "resu: No such file or directory" error message is printed
         And the command exits with an error code
 
     Scenario: resu prints and returns an error when the command is not executable
         When the user runs "resu nobody -- /etc/passwd"
-        Then a "Permission denied" error message is printed
+        Then a "resu: Permission denied" error message is printed
         And the command exits with an error code
