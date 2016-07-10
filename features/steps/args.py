@@ -14,3 +14,7 @@ def step_impl(context, command):
 @then(u'a usage message is printed')
 def step_impl(context):
     context.stdout.should.match(r'usage: resu .*')
+
+@then(u'the command prints the output "{}"')
+def step_impl(context, expected_output):
+    context.stdout.rstrip().should.equal(expected_output)
