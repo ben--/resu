@@ -24,7 +24,9 @@ static void check_args(int argc, char **argv)
             usage(stdout);
             exit(0);
         }
-        break;
+        usage_error();
+    case 3:
+        usage_error();
     }
 
     if (0 != strcmp("--", argv[2])) {
