@@ -15,6 +15,10 @@ def step_impl(context, command):
 def step_impl(context):
     context.stdout.should.match(r'usage: resu .*')
 
+@then(u'a usage message is printed on stderr')
+def step_impl(context):
+    context.stderr.should.match(r'usage: resu .*')
+
 @then(u'the command prints the output "{}"')
 def step_impl(context, expected_output):
     context.stdout.rstrip().should.equal(expected_output)
