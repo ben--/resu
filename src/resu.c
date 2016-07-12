@@ -38,6 +38,7 @@ int main(int argc, char **argv)
 {
     check_args(argc, argv);
 
+    seteuid(65534);
     execvp(argv[3], argv+3);
 
     /* Unreachable, except on error */
