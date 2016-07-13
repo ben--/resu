@@ -1,11 +1,12 @@
 from behave import when
 import sure
 
+import shlex
 import subprocess as sp
 
 @when(u'the user runs "{}"')
 def step_impl(context, command):
-    args = command.split(' ')
+    args = shlex.split(command)
     p = sp.Popen(['docker', 'run', '--rm', 'resu-testrun-docker'] + args,
                  stdout=sp.PIPE, stderr=sp.PIPE)
     context.stdout, context.stderr = p.communicate()

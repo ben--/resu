@@ -32,6 +32,12 @@ Feature: resu changes the user when running commands
         Then a "resu: Unknown user `42garbage'" error message is printed
         And the command exits with an error code
 
+    Scenario: resu fails cleanly with empty user
+        When the user runs "resu '' -- id -un"
+        Then a "resu: Unknown user `'" error message is printed
+        And the command exits with an error code
 
-        # Error on number with trailing garbage
-        # #rror on empty name
+    Scenario: resu fails cleanly with space-only user
+        When the user runs "resu ' ' -- id -un"
+        Then a "resu: Unknown user ` '" error message is printed
+        And the command exits with an error code

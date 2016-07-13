@@ -43,10 +43,9 @@ int main(int argc, char **argv)
     if (pw != NULL) {
         setuid(pw->pw_uid);
     } else {
-        unsigned long uid;
         char *endptr;
-        uid = strtoul(argv[1], &endptr, 10);
-        if (*endptr != '\0') {
+        unsigned long uid = strtoul(argv[1], &endptr, 10);
+        if (endptr == argv[1] || *endptr != '\0') {
             fprintf(stderr, "resu: Unknown user `%s'", argv[1]);
             exit(1);
         }
