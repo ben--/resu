@@ -41,7 +41,14 @@ int main(int argc, char **argv)
     check_args(argc, argv);
 
     pw = getpwnam(argv[1]);
-    setuid(pw->pw_uid);
+    if (pw != NULL) {
+        setuid(pw->pw_uid);
+    } else {
+        unsigned long uid;
+        uid = strtoul(argv[1], NULL, 10);
+        setuid(uid);
+    }
+
     execvp(argv[3], argv+3);
 
     /* Unreachable, except on error */

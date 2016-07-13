@@ -6,10 +6,6 @@ Feature: resu changes the user when running commands
         When the user runs "id -un"
         Then the command prints the output "root"
 
-    Scenario: resu tolerates an explicit root user
-        When the user runs "resu root -- id -un"
-        Then the command prints the output "root"
-
     Scenario: resu changes the effective user id
         When the user runs "resu nobody -- id -un"
         Then the command prints the output "nobody"
@@ -18,6 +14,12 @@ Feature: resu changes the user when running commands
         When the user runs "resu nobody -- id -run"
         Then the command prints the output "nobody"
 
-        # Numeric UID
-        # Lookup by name (ie root)
+    Scenario: resu tolerates an explicit root user
+        When the user runs "resu root -- id -un"
+        Then the command prints the output "root"
+
+    Scenario: resu accepts a numeric user id
+        When the user runs "resu 42 -- id -u"
+        Then the command prints the output "42"
+
         # Error on unknown name lookup
