@@ -1,3 +1,4 @@
+#include <pwd.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -36,9 +37,11 @@ static void check_args(int argc, char **argv)
 
 int main(int argc, char **argv)
 {
+    struct passwd *pw;
     check_args(argc, argv);
 
-    setuid(65534);
+    pw = getpwnam(argv[1]);
+    setuid(pw->pw_uid);
     execvp(argv[3], argv+3);
 
     /* Unreachable, except on error */
