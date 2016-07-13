@@ -37,15 +37,19 @@ static void check_args(int argc, char **argv)
 
 int main(int argc, char **argv)
 {
-    struct passwd *pw;
     check_args(argc, argv);
 
-    pw = getpwnam(argv[1]);
+    struct passwd *pw = getpwnam(argv[1]);
     if (pw != NULL) {
         setuid(pw->pw_uid);
     } else {
         unsigned long uid;
-        uid = strtoul(argv[1], NULL, 10);
+        char *endptr;
+        uid = strtoul(argv[1], &endptr, 10);
+        if (*endptr != '\0') {
+            fprintf(stderr, "resu: Unknown user `%s'", argv[1]);
+            exit(1);
+        }
         setuid(uid);
     }
 

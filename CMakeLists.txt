@@ -2,7 +2,8 @@ cmake_minimum_required (VERSION 2.6)
 project (resu)
 
 add_compile_options(
-  -Wall -Werror -Wextra -Wpedantic
-  )
+    -std=c99
+    -Wall -Werror -Wextra -Wpedantic
+    )
 
 add_executable(resu src/resu.c)

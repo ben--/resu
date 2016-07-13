@@ -22,4 +22,16 @@ Feature: resu changes the user when running commands
         When the user runs "resu 42 -- id -u"
         Then the command prints the output "42"
 
-        # Error on unknown name lookup
+    Scenario: resu fails cleanly with an unknown username
+        When the user runs "resu unknown -- id -un"
+        Then a "resu: Unknown user `unknown'" error message is printed
+        And the command exits with an error code
+
+    Scenario: resu fails cleanly with garbage on the name of a numeric UID
+        When the user runs "resu 42garbage -- id -un"
+        Then a "resu: Unknown user `42garbage'" error message is printed
+        And the command exits with an error code
+
+
+        # Error on number with trailing garbage
+        # #rror on empty name
