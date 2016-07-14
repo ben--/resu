@@ -13,16 +13,16 @@ Feature: resu provides feedback on bad arguments
         Then the command exits with an error code
 
     Scenario: 1 argument results in an error
-        When the user runs "resu nobody"
+        When the user runs "resu nobody:nogroup"
         Then a usage message is printed on stderr
         Then the command exits with an error code
 
     Scenario: 2 argument results in an error
-        When the user runs "resu nobody --"
+        When the user runs "resu nobody:nogroup --"
         Then a usage message is printed on stderr
         Then the command exits with an error code
 
     Scenario: requires a -- to separate args from command
-        When the user runs "resu noboody whatever echo hello"
+        When the user runs "resu noboody:nogroup whatever echo hello"
         Then a usage message is printed on stderr
         And the command exits with an error code

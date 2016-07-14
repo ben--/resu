@@ -1,3 +1,4 @@
+#include <grp.h>
 #include <pwd.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -6,7 +7,7 @@
 
 static void usage(FILE *f)
 {
-    fprintf(f, "usage: resu user -- cmd [args...]\n");
+    fprintf(f, "usage: resu user:group -- cmd [args...]\n");
 }
 
 static void usage_error()
@@ -39,7 +40,14 @@ int main(int argc, char **argv)
 {
     check_args(argc, argv);
 
-    struct passwd *pw = getpwnam(argv[1]);
+    char *user = argv[1];
+    char *group = strchr(user, ':');
+    *group++ = '\0'; /* FIXME: set after string on empty group */
+
+    struct group *gr = getgrnam(group);
+    setgid(gr->gr_gid);
+
+    struct passwd *pw = getpwnam(user);
     if (pw != NULL) {
         if (0 != setuid(pw->pw_uid)) {
             perror("resu");
@@ -47,9 +55,9 @@ int main(int argc, char **argv)
         }
     } else {
         char *endptr;
-        unsigned long uid = strtoul(argv[1], &endptr, 10);
-        if (endptr == argv[1] || *endptr != '\0') {
-            fprintf(stderr, "resu: Unknown user `%s'", argv[1]);
+        unsigned long uid = strtoul(user, &endptr, 10);
+        if (endptr == user || *endptr != '\0') {
+            fprintf(stderr, "resu: Unknown user `%s'", user);
             exit(1);
         }
         if (0 != setuid(uid)) {
