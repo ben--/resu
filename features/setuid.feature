@@ -41,3 +41,15 @@ Feature: resu changes the user when running commands
         When the user runs "resu ' ' -- id -un"
         Then a "resu: Unknown user ` '" error message is printed
         And the command exits with an error code
+
+    Scenario: resu fails cleanly when setuid fails
+        When the user runs "resu nobody -- resu root -- id"
+        Then the command prints no output
+        And a "resu: Operation not permitted" error message is printed
+        And the command exits with an error code
+
+    Scenario: resu fails cleanly when setuid fails
+        When the user runs "resu nobody -- resu 0 -- id"
+        Then the command prints no output
+        And a "resu: Operation not permitted" error message is printed
+        And the command exits with an error code

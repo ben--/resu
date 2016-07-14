@@ -41,7 +41,10 @@ int main(int argc, char **argv)
 
     struct passwd *pw = getpwnam(argv[1]);
     if (pw != NULL) {
-        setuid(pw->pw_uid);
+        if (0 != setuid(pw->pw_uid)) {
+            perror("resu");
+            exit(1);
+        }
     } else {
         char *endptr;
         unsigned long uid = strtoul(argv[1], &endptr, 10);
@@ -49,7 +52,10 @@ int main(int argc, char **argv)
             fprintf(stderr, "resu: Unknown user `%s'", argv[1]);
             exit(1);
         }
-        setuid(uid);
+        if (0 != setuid(uid)) {
+            perror("resu");
+            exit(1);
+        }
     }
 
     execvp(argv[3], argv+3);
