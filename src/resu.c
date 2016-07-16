@@ -36,19 +36,34 @@ static void check_args(int argc, char **argv)
     }
 }
 
+static unsigned long _parse_ul(const char *type, const char *str)
+{
+    char *endptr;
+    unsigned long ul = strtoul(str, &endptr, 10);
+    if (endptr == str || *endptr != '\0') {
+        fprintf(stderr, "resu: Unknown %s `%s'", type, str);
+        exit(1);
+    }
+    return ul;
+}
+
 static unsigned long _gid(const char *group)
 {
     struct group *gr = getgrnam(group);
     if (gr != NULL) {
         return gr->gr_gid;
     } else {
-        char *endptr;
-        unsigned long gid = strtoul(group, &endptr, 10);
-        if (endptr == group || *endptr != '\0') {
-            fprintf(stderr, "resu: Unknown group `%s'", group);
-            exit(1);
-        }
-        return gid;
+        return _parse_ul("group", group);
+    }
+}
+
+static unsigned long _uid(const char *user)
+{
+    struct passwd *pw = getpwnam(user);
+    if (pw != NULL) {
+        return pw->pw_uid;
+    } else {
+        return _parse_ul("user", user);
     }
 }
 
@@ -60,29 +75,14 @@ int main(int argc, char **argv)
     char *group = strchr(user, ':');
     *group++ = '\0'; /* FIXME: set after string on empty group */
 
-    unsigned long gid = _gid(group);
-    if (0 != setgid(gid)) {
+    if (0 != setgid(_gid(group))) {
         perror("resu");
         exit(1);
     }
 
-    struct passwd *pw = getpwnam(user);
-    if (pw != NULL) {
-        if (0 != setuid(pw->pw_uid)) {
-            perror("resu");
-            exit(1);
-        }
-    } else {
-        char *endptr;
-        unsigned long uid = strtoul(user, &endptr, 10);
-        if (endptr == user || *endptr != '\0') {
-            fprintf(stderr, "resu: Unknown user `%s'", user);
-            exit(1);
-        }
-        if (0 != setuid(uid)) {
-            perror("resu");
-            exit(1);
-        }
+    if (0 != setuid(_uid(user))) {
+        perror("resu");
+        exit(1);
     }
 
     execvp(argv[3], argv+3);
