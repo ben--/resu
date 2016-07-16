@@ -45,7 +45,23 @@ int main(int argc, char **argv)
     *group++ = '\0'; /* FIXME: set after string on empty group */
 
     struct group *gr = getgrnam(group);
-    setgid(gr->gr_gid);
+    if (gr != NULL) {
+        if (0 != setgid(gr->gr_gid)) {
+            perror("resu");
+            exit(1);
+        }
+    } else {
+        char *endptr;
+        unsigned long gid = strtoul(group, &endptr, 10);
+        if (endptr == group || *endptr != '\0') {
+            fprintf(stderr, "resu: Unknown group `%s'", group);
+            exit(1);
+        }
+        if (0 != setgid(gid)) {
+            perror("resu");
+            exit(1);
+        }
+    }
 
     struct passwd *pw = getpwnam(user);
     if (pw != NULL) {
