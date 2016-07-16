@@ -36,6 +36,22 @@ static void check_args(int argc, char **argv)
     }
 }
 
+static unsigned long _gid(const char *group)
+{
+    struct group *gr = getgrnam(group);
+    if (gr != NULL) {
+        return gr->gr_gid;
+    } else {
+        char *endptr;
+        unsigned long gid = strtoul(group, &endptr, 10);
+        if (endptr == group || *endptr != '\0') {
+            fprintf(stderr, "resu: Unknown group `%s'", group);
+            exit(1);
+        }
+        return gid;
+    }
+}
+
 int main(int argc, char **argv)
 {
     check_args(argc, argv);
@@ -44,23 +60,10 @@ int main(int argc, char **argv)
     char *group = strchr(user, ':');
     *group++ = '\0'; /* FIXME: set after string on empty group */
 
-    struct group *gr = getgrnam(group);
-    if (gr != NULL) {
-        if (0 != setgid(gr->gr_gid)) {
-            perror("resu");
-            exit(1);
-        }
-    } else {
-        char *endptr;
-        unsigned long gid = strtoul(group, &endptr, 10);
-        if (endptr == group || *endptr != '\0') {
-            fprintf(stderr, "resu: Unknown group `%s'", group);
-            exit(1);
-        }
-        if (0 != setgid(gid)) {
-            perror("resu");
-            exit(1);
-        }
+    unsigned long gid = _gid(group);
+    if (0 != setgid(gid)) {
+        perror("resu");
+        exit(1);
     }
 
     struct passwd *pw = getpwnam(user);
