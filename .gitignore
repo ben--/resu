@@ -1,5 +1,6 @@
 build
-test
+acceptance-test
+unit-test
 
 # emacs
 *~

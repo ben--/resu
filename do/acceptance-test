@@ -27,11 +27,11 @@ if [[ $DOCKER_IMAGE != ${DOCKER_CONTAINER-} ]]; then
     docker build \
            --force-rm --rm=true \
            -t "$DOCKER_IMAGE" \
-           "$source_dir/do/test-docker"
+           "$source_dir/do/acceptance-test-docker"
 
     "$source_dir/do/create-user" "$DOCKER_IMAGE" --with-docker
 
-    output_dir="${source_dir}/test"
+    output_dir="${source_dir}/acceptance-test"
     if [[ -e "$output_dir" ]]; then
         echo rm -rf "$output_dir"
         rm -rf "$output_dir"
@@ -48,7 +48,7 @@ if [[ $DOCKER_IMAGE != ${DOCKER_CONTAINER-} ]]; then
            --volume="$output_dir:$output_dir:rw" \
            --workdir="$output_dir" \
            $DOCKER_IMAGE-user \
-           "$source_dir/do/test"
+           "$source_dir/do/acceptance-test"
     exit $?
 fi
 
