@@ -4,6 +4,7 @@ project (resu)
 add_compile_options(
     -std=c99
     -Wall -Werror -Wextra -Wpedantic
+    -Dtested_main=main
     )
 
 add_executable(resu src/resu.c)

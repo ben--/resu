@@ -67,7 +67,7 @@ static unsigned long _uid(const char *user)
     }
 }
 
-int main(int argc, char **argv)
+int tested_main(int argc, char **argv)
 {
     _check_args(argc, argv);
 
