@@ -5,34 +5,34 @@
 #include <string.h>
 #include <unistd.h>
 
-static void usage(FILE *f)
+static void _usage(FILE *f)
 {
     fprintf(f, "usage: resu user:group -- cmd [args...]\n");
 }
 
-static void usage_error()
+static void _usage_error()
 {
-    usage(stderr);
+    _usage(stderr);
     exit(1);
 }
 
-static void check_args(int argc, char **argv)
+static void _check_args(int argc, char **argv)
 {
     switch (argc) {
     case 1:
-        usage_error();
+        _usage_error();
     case 2:
         if (0 == strcmp("--help", argv[1])) {
-            usage(stdout);
+            _usage(stdout);
             exit(0);
         }
-        usage_error();
+        _usage_error();
     case 3:
-        usage_error();
+        _usage_error();
     }
 
     if (0 != strcmp("--", argv[2])) {
-        usage_error();
+        _usage_error();
     }
 }
 
@@ -69,7 +69,7 @@ static unsigned long _uid(const char *user)
 
 int main(int argc, char **argv)
 {
-    check_args(argc, argv);
+    _check_args(argc, argv);
 
     char *user = argv[1];
     char *group = strchr(user, ':');
