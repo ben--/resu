@@ -1,0 +1,55 @@
+#!/bin/bash -eu
+set -o pipefail
+
+DOCKER_IMAGE=resu/unit-test
+
+if [[ $DOCKER_IMAGE != ${DOCKER_CONTAINER-} ]]; then
+# FIXME: Try this version on a pre docker-for-mac machine...
+#    if ! docker images > /dev/null; then
+
+#    if [[ $(uname -s) = Darwin ]]; then
+#        if [[ $(docker-machine status) = Stopped ]]; then
+#            docker-machine start
+#        fi
+#        eval $(docker-machine env)
+#    fi
+
+#    if [[ $(uname -s) = Linux ]]; then
+#        docker_in_docker=(--volume=/var/run/docker.sock:/var/run/docker.sock)
+#    else
+#        docker_in_docker=(--env "DOCKER_HOST=$DOCKER_HOST")
+#    fi
+
+    # FIXME: May behave strangely on symlinks
+    source_dir="$(dirname "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)")"
+
+    echo -n "Base Docker: "
+    docker build ${DOCKER_QUIET-} \
+           --force-rm --rm=true \
+           -t "$DOCKER_IMAGE" \
+           "$source_dir/do/unit-test-docker"
+
+    "$source_dir/do/create-user" "$DOCKER_IMAGE" --with-docker
+
+    output_dir="${source_dir}/unit-test"
+    if [[ -e "$output_dir" ]]; then
+        echo rm -rf "$output_dir"
+        rm -rf "$output_dir"
+    fi
+    mkdir "$output_dir"
+
+    docker run -t \
+           --env DOCKER_CONTAINER=$DOCKER_IMAGE \
+           --env "source_dir=$source_dir" \
+           --rm \
+           --sig-proxy=true \
+           --volume="/var/run/docker.sock:/var/run/docker.sock" \
+           --volume="$source_dir:$source_dir:ro" \
+           --volume="$output_dir:$output_dir:rw" \
+           --workdir="$output_dir" \
+           $DOCKER_IMAGE-user \
+           "$source_dir/do/unit-test"
+    exit $?
+fi
+
+cmake $source_dir/test
