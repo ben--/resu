@@ -29,7 +29,7 @@ ENTRYPOINT ["/tini", "--"]
 
 ADD resu /sbin/resu
 """.format(TINI_VERSION))
-    assert 0 == sp.call(['docker', 'build', '-t', docker_name, docker_dir])
+    assert 0 == sp.call(['docker', 'build', '-t', docker_name, docker_dir], stdout=sp.PIPE)
     context.docker_name = docker_name
 
 @then(u'a "{}" error message is printed')
