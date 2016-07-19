@@ -7,11 +7,12 @@ TINI_VERSION = 'v0.9.0'
 
 @given(u'a docker with resu and tini')
 def step_impl(context):
-    docker_name = 'resu-testrun-docker'
-    shutil.rmtree(docker_name, ignore_errors=True)
-    os.mkdir(docker_name)
-    shutil.copy('../build/resu', os.path.join(docker_name, 'resu'))
-    with open(os.path.join(docker_name, 'Dockerfile'), 'w') as f:
+    docker_dir = 'docker'
+    docker_name = 'resu/acceptance-test-run'
+    shutil.rmtree(docker_dir, ignore_errors=True)
+    os.mkdir(docker_dir)
+    shutil.copy('../build/resu', os.path.join(docker_dir, 'resu'))
+    with open(os.path.join(docker_dir, 'Dockerfile'), 'w') as f:
         f.write("""
 FROM debian:8.5
 
@@ -28,7 +29,7 @@ ENTRYPOINT ["/tini", "--"]
 
 ADD resu /sbin/resu
 """.format(TINI_VERSION))
-    assert 0 == sp.call(['docker', 'build', '-t', docker_name, docker_name])
+    assert 0 == sp.call(['docker', 'build', '-t', docker_name, docker_dir])
     context.docker_name = docker_name
 
 @then(u'a "{}" error message is printed')

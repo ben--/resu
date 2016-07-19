@@ -7,7 +7,7 @@ import subprocess as sp
 @when(u'the user runs "{}"')
 def step_impl(context, command):
     args = shlex.split(command)
-    p = sp.Popen(['docker', 'run', '--rm', 'resu-testrun-docker'] + args,
+    p = sp.Popen(['docker', 'run', '--rm', context.docker_name] + args,
                  stdout=sp.PIPE, stderr=sp.PIPE)
     context.stdout, context.stderr = p.communicate()
     context.returncode = p.returncode
