@@ -1,6 +1,6 @@
-build
-acceptance-test
-unit-test
+/build
+/acceptance-test
+/unit-test
 
 # emacs
 *~

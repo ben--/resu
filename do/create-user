@@ -18,7 +18,7 @@ upsert_group()
 root_docker="$1"
 user_docker="$1-user"
 
-user_docker_dir="$do_dir/.mkdo-$user_docker"
+user_docker_dir="$do_dir/.mkdo-$(echo "$user_docker" | sed -e 's,/,-,g')"
 if [[ -e "$user_docker_dir" ]]; then
     rm -rf "$user_docker_dir"
 fi
