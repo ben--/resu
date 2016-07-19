@@ -79,7 +79,7 @@ USER $user
 EOF
 
 echo -n "User Docker: "
-docker build \
+docker build ${DOCKER_QUIET-} \
        --force-rm --rm=true \
        -t "$user_docker" \
        "$user_docker_dir"
