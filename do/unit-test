@@ -53,3 +53,22 @@ if [[ $DOCKER_IMAGE != ${DOCKER_CONTAINER-} ]]; then
 fi
 
 cmake $source_dir/test
+make -j8
+
+if [[ -t 1 ]]; then
+    if ctest -V; then
+        echo -e "\e[92;1m   A_A
+ =(o.o)=    ,
+ (  _  )--'
+  !! !!      SUCCESS!\e[0m"
+    else
+        echo -e "\e[91;1m   A_A
+ =(x.x)=    ,
+ (  _  )--'
+  !! !!      FAIL.\e[0m"
+        exit 1
+    fi
+else
+    export CMOCKA_MESSAGE_OUTPUT=XML
+    ctest -V
+fi

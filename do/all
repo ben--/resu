@@ -1,6 +1,6 @@
 #!/bin/bash -eu
 set -o pipefail
 
-#do/unit-test
+do/unit-test
 do/build
 do/acceptance-test
