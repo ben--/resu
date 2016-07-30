@@ -11,10 +11,15 @@ function (ADD_CMOCKA_TEST _testName)
 endfunction (ADD_CMOCKA_TEST)
 
 add_compile_options(
+    -g
     --std=c99
     -Wall -Werror -Wextra -Wpedantic
     )
 
-add_cmocka_test(test_args ../test/test_args.c ../src/resu.c)
+include_directories(
+    ../src
+    )
+
+add_cmocka_test(test_args ../test/test_args.c ../src/args.c)
 
 enable_testing()
