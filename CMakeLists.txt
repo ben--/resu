@@ -8,4 +8,4 @@ add_compile_options(
     -Dtestable_exit=exit
     )
 
-add_executable(resu src/resu.c)
+add_executable(resu src/resu.c src/args.c)

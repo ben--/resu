@@ -7,35 +7,9 @@
 #include <string.h>
 #include <unistd.h>
 
-static void _usage(FILE *f)
+void usage(FILE *f)
 {
     fprintf(f, "usage: resu user:group -- cmd [args...]\n");
-}
-
-static void _usage_error()
-{
-    _usage(stderr);
-    exit(1);
-}
-
-static void _check_args(int argc, char **argv)
-{
-    switch (argc) {
-    case 1:
-        _usage_error();
-    case 2:
-        if (0 == strcmp("--help", argv[1])) {
-            _usage(stdout);
-            exit(0);
-        }
-        _usage_error();
-    case 3:
-        _usage_error();
-    }
-
-    if (0 != strcmp("--", argv[2])) {
-        _usage_error();
-    }
 }
 
 static unsigned long _parse_ul(const char *type, const char *str)
@@ -71,7 +45,7 @@ static unsigned long _uid(const char *user)
 
 int tested_main(int argc, char **argv)
 {
-    _check_args(argc, argv);
+    check_args(argc, argv);
 
     char *user = argv[1];
     char *group = strchr(user, ':');
