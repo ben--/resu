@@ -4,8 +4,11 @@ RUN apt-get update
 RUN apt-get install -y --no-install-recommends \
         build-essential \
         cmake \
+        gdb \
+        libc-dbg \
         llvm-3.5 \
-        make
+        make \
+        strace
 RUN rm -rf /var/lib/apt/lists/* && \
     apt-get clean
 
@@ -13,7 +16,7 @@ ADD cmocka-1.0.1.tar.xz /usr/src
 RUN cd /usr/src/cmocka-1.0.1 \
     && mkdir build \
     && cd build \
-    && cmake -DCMAKE_INSTALL_PREFIX=/usr .. \
+    && cmake -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_INSTALL_PREFIX=/usr .. \
     && make \
     && make install
 
