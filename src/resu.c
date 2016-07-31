@@ -7,21 +7,29 @@
 #include <string.h>
 #include <unistd.h>
 
-void usage(FILE *f)
+static void _usage(FILE *f)
 {
     fprintf(f, "usage: resu user:group -- cmd [args...]\n");
 }
 
+static void _usage_error()
+{
+    _usage(stderr);
+    exit(1);
+}
+
 static void _check_args(int argc, char **argv)
 {
-    if (argc == 2 && 0 == strcmp(argv[1], "--help")) {
-        usage(stdout);
+    if (2 == argc && 0 == strcmp(argv[1], "--help")) {
+        _usage(stdout);
         exit(0);
     }
 
-    if (argc < 4 || 0 != strcmp(argv[2], "--")) {
-        usage(stderr);
-        exit(1);
+    if (argc < 4) {
+        _usage_error();
+    }
+    if (0 != strcmp(argv[2], "--")) {
+        _usage_error();
     }
 }
 
@@ -29,8 +37,7 @@ static char * _split_group_from_user(char *user_group)
 {
     char *group = strchr(user_group, ':');
     if (NULL == group) {
-        usage(stderr);
-        exit(1);
+        _usage_error();
     }
     *group++ = '\0';
     return group;
