@@ -19,10 +19,21 @@ static void _check_args(int argc, char **argv)
         exit(0);
     }
 
-    if (argc < 4 || NULL == strchr(argv[1], ':') || 0 != strcmp(argv[2], "--")) {
+    if (argc < 4 || 0 != strcmp(argv[2], "--")) {
         usage(stderr);
         exit(1);
     }
+}
+
+static char * _split_group_from_user(char *user_group)
+{
+    char *group = strchr(user_group, ':');
+    if (NULL == group) {
+        usage(stderr);
+        exit(1);
+    }
+    *group++ = '\0';
+    return group;
 }
 
 static unsigned long _parse_ul(const char *type, const char *str)
@@ -61,8 +72,7 @@ int main(int argc, char **argv)
     _check_args(argc, argv);
 
     char *user = argv[1];
-    char *group = strchr(user, ':');
-    *group++ = '\0';
+    char *group = _split_group_from_user(user);
 
     if (0 != setgid(_gid(group))) {
         perror("resu");
