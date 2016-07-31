@@ -19,7 +19,7 @@ static void _check_args(int argc, char **argv)
         exit(0);
     }
 
-    if (argc < 4 || 0 != strcmp(argv[2], "--")) {
+    if (argc < 4 || NULL == strchr(argv[1], ':') || 0 != strcmp(argv[2], "--")) {
         usage(stderr);
         exit(1);
     }
@@ -56,13 +56,13 @@ static unsigned long _uid(const char *user)
     }
 }
 
-int tested_main(int argc, char **argv)
+int main(int argc, char **argv)
 {
     _check_args(argc, argv);
 
     char *user = argv[1];
     char *group = strchr(user, ':');
-    *group++ = '\0'; /* FIXME: set after string on empty group */
+    *group++ = '\0';
 
     if (0 != setgid(_gid(group))) {
         perror("resu");
