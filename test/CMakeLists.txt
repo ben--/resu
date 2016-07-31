@@ -21,5 +21,6 @@ include_directories(
     )
 
 add_cmocka_test(test_args ../test/test_args.c ../src/args.c)
+add_cmocka_test(test_user_arg ../test/test_user_arg.c ../src/args.c)
 
 enable_testing()

@@ -5,6 +5,7 @@
 #include <stdlib.h>
 
 void check_args(int argc, char **argv);
+void parse_user(char *user_group, char **out_group);
 void usage(FILE *f);
 
 void testable_exit(int status);

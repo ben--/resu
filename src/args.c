@@ -14,3 +14,13 @@ void check_args(int argc, char **argv)
     (void)argc;
     (void)argv;
 }
+
+void parse_user(char *user_group, char **out_group)
+{
+    char *sep = strchr(user_group, ':');
+    if (sep == user_group) {
+        testable_exit(1);
+    }
+    *sep = '\0';
+    *out_group = sep + 1;
+}
