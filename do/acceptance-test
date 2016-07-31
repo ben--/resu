@@ -52,4 +52,19 @@ if [[ $DOCKER_IMAGE != ${DOCKER_CONTAINER-} ]]; then
     exit $?
 fi
 
-behave ../features
+if [[ -t 1 ]]; then
+    if behave ../features; then
+        echo -e "\e[92;1m   A_A
+ =(o.o)=    ,
+ (  _  )--'
+  !! !!      SUCCESS!\e[0m"
+    else
+        echo -e "\e[91;1m   A_A
+ =(x.x)=    ,
+ (  _  )--'
+  !! !!      FAIL.\e[0m"
+        exit 1
+    fi
+else
+    behave ../features
+fi
