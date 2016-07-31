@@ -12,6 +12,19 @@ void usage(FILE *f)
     fprintf(f, "usage: resu user:group -- cmd [args...]\n");
 }
 
+static void _check_args(int argc, char **argv)
+{
+    if (argc == 2 && 0 == strcmp(argv[1], "--help")) {
+        usage(stdout);
+        exit(0);
+    }
+
+    if (argc < 4 || 0 != strcmp(argv[2], "--")) {
+        usage(stderr);
+        exit(1);
+    }
+}
+
 static unsigned long _parse_ul(const char *type, const char *str)
 {
     char *endptr;
@@ -45,7 +58,7 @@ static unsigned long _uid(const char *user)
 
 int tested_main(int argc, char **argv)
 {
-    check_args(argc, argv);
+    _check_args(argc, argv);
 
     char *user = argv[1];
     char *group = strchr(user, ':');
