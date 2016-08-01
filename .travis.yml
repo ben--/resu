@@ -1,14 +1,12 @@
 sudo: required
-
 services:
-  - docker
-
+    - docker
 script:
-  - do/all
-
+    - do/all
 deploy:
     skip_cleanup: true
-    api_key: "goTz3GVq28HnCiQquqvoxEkXkp+ttlNmxdwmjOCSTwPhrYYCGqXRX2erb4qwyF2fVNL+3l5zDBtc8krFpAued16toss4XszFSC49KWwsngXEO+WaHUXhVvDlKJ36yC/zGVK+AMheGEZO2U/G33JohAJAAtsKlaVzFBsVDFwz37v+sdozsiiSX5VCsME+pwU4J5uaqR3ZqenyeTPsHxJS23rCQW3xgs4N/IndlsQ5ugUdGl/Qwubeqho/w5OG/W1QixltyLZHum1K+717RSaHC8yTmeedzM2ag2qDBz40J3QdEi7zxDAxqbfzOnk54Z5/COXIHUBHh3fhxnmLbGSTr8qOxyBDsapVhHdcGbLWUCIsRoPvS981ENGy2tLfs1zHVgZcwWH81MiDsyHfdP4tKmjUQETCi78K7TIWrfMGNa0L25mAJBDrFVwiQZZAzrRIv4ou188KxUr1VyfasCh+8DOrqzF6fSUVBCKbSmMn+ijWWBZ/Dn2Zl2tcX3sXS6id/khzyphCJGTMk6PscZeTlMb+XKrdyERblxBTq26/g02uBOKbrGgle478BnXaFXm7UZMugnIL2c8lnrkxQ3mQZ59eUHXlPxGNppWLT6NWzgLNiZBq8G3iaJCAe8W8cGriFz6H+3Cuvbb6yuPRqBZJjP/+6fUeRZtcBJhF7tTQIZU="
+    api_key:
+        secure: fXQqOZTT0MxROBeNcCqnk1XVJ8v82LS3c+cKj+IaDyNepwuTdPDNOSt6DvhkPy8wRqsxbaVTO2r305Fgdvj+EIC77NlCUaL3IVhOKiP6d+JOf4ZNLvaqq3esv/33CVETfJCs7+vtnqykPwrkZ6v1fIdjhhT3YcMPV4hieB0dpjIRcSuk+nnelPc0I6ClxXG8pGKRmrj4qFWGTGaTgbbqasb5rrDCgy48bZ8m0CBoPbhdaCLzBOA51onYVs/RyqNi91NnlLDZxFE0J361V5eVQmdWCGsL5AzcE0wpuhwZY6wnQwmld+SDYSueGaEcyhTYMbXkAfqYe4OONyDYEVUthSLKZtio4qDVhYkqiVcPjgg6QcBJGHy4pYqLXp9xg9Epi7R74cBPh2zFEwudoCf6bmcNBH96/j+ASoW8MIVAzFuHCQ8NYIfwYVgaD9H/o9LEYVtaeI58zkzknydXA6sefpQryEqQEkOnVKEgs1Z1KsAhtQn8/EyQhG1fNSru4hFd1gpd+hYqd8lch5pN2QJPk9X1pp4VGr4ui0MnWFW4TuAd3xhyyO3iCHV1RsHl6IAELEkX5s7GZYydDt/7AgZgerVmyBfYMtyMDXUGwRayhxic8rSBo0EpwfukRay/v+2xlYTYuuYJObAJBJDlBb1dDHoDULeczT4CA+mfhl26hG8=
     provider: releases
     file: build/resu
     on:
