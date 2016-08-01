@@ -5,3 +5,11 @@ services:
 
 script:
   - do/all
+
+deploy:
+    skip_cleanup: true
+    api_key: "goTz3GVq28HnCiQquqvoxEkXkp+ttlNmxdwmjOCSTwPhrYYCGqXRX2erb4qwyF2fVNL+3l5zDBtc8krFpAued16toss4XszFSC49KWwsngXEO+WaHUXhVvDlKJ36yC/zGVK+AMheGEZO2U/G33JohAJAAtsKlaVzFBsVDFwz37v+sdozsiiSX5VCsME+pwU4J5uaqR3ZqenyeTPsHxJS23rCQW3xgs4N/IndlsQ5ugUdGl/Qwubeqho/w5OG/W1QixltyLZHum1K+717RSaHC8yTmeedzM2ag2qDBz40J3QdEi7zxDAxqbfzOnk54Z5/COXIHUBHh3fhxnmLbGSTr8qOxyBDsapVhHdcGbLWUCIsRoPvS981ENGy2tLfs1zHVgZcwWH81MiDsyHfdP4tKmjUQETCi78K7TIWrfMGNa0L25mAJBDrFVwiQZZAzrRIv4ou188KxUr1VyfasCh+8DOrqzF6fSUVBCKbSmMn+ijWWBZ/Dn2Zl2tcX3sXS6id/khzyphCJGTMk6PscZeTlMb+XKrdyERblxBTq26/g02uBOKbrGgle478BnXaFXm7UZMugnIL2c8lnrkxQ3mQZ59eUHXlPxGNppWLT6NWzgLNiZBq8G3iaJCAe8W8cGriFz6H+3Cuvbb6yuPRqBZJjP/+6fUeRZtcBJhF7tTQIZU="
+    provider: releases
+    file: build/resu
+    on:
+        tags: true
