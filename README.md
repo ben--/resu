@@ -34,4 +34,4 @@ usage: resu user:group -- cmd [args...]
 
 Both user and group are mandatory.  They can either be names or numeric identifiers.  If they are names, then they must be available in `/etc/passwd` or `/etc/group` *within* the docker.
 
-The second argument to `resu` is a double-dash after wnich the nested command and its arguments follow.
+The second argument to `resu` is a double-dash after which the nested command and its arguments follow.
