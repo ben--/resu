@@ -14,7 +14,7 @@ First, instrument your favorite, minimalist docker image by installing `tini` an
 FROM debian:8.5
 
 ENV TINI_VERSION v0.9.0
-ENV RESU_VERSION 0.1.1
+ENV RESU_VERSION 0.2.0
 
 ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /sbin/tini
 ADD https://github.com/ben--/resu/releases/download/${RESU_VERSION}/resu /sbin/resu
@@ -30,10 +30,10 @@ Then, run your normal application either using the `CMD` Dockerfile directive or
 A special version is provided for Alpine users that is leverages musl-libc:
 
 ```Dockerfile
-FROM debian:8.5
+FROM alpine
 
 ENV TINI_VERSION v0.9.0
-ENV RESU_VERSION 0.1.1
+ENV RESU_VERSION 0.2.0
 
 ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini-static /sbin/tini
 ADD https://github.com/ben--/resu/releases/download/${RESU_VERSION}/resu-alpine /sbin/resu
