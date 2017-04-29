@@ -3,7 +3,7 @@ import os
 import shutil
 import subprocess as sp
 
-TINI_VERSION = 'v0.9.0'
+TINI_VERSION = 'v0.14.0'
 
 @given(u'a docker with resu and tini')
 def step_impl(context):

@@ -13,7 +13,7 @@ First, instrument your favorite, minimalist docker image by installing `tini` an
 ```Dockerfile
 FROM debian:8.5
 
-ENV TINI_VERSION v0.9.0
+ENV TINI_VERSION v0.14.0
 ENV RESU_VERSION 0.2.0
 
 ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /sbin/tini
@@ -32,7 +32,7 @@ A special version is provided for Alpine users that is leverages musl-libc:
 ```Dockerfile
 FROM alpine
 
-ENV TINI_VERSION v0.9.0
+ENV TINI_VERSION v0.14.0
 ENV RESU_VERSION 0.2.0
 
 ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini-static /sbin/tini
