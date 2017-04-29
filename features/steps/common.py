@@ -32,13 +32,13 @@ ADD resu /sbin/resu
     assert 0 == sp.call(['docker', 'build', '-t', docker_name, docker_dir], stdout=sp.PIPE)
     context.docker_name = docker_name
 
-@given(u'an Alpine base image with static resu and tini')
+@given(u'an Alpine base image with resu and tini')
 def step_impl(context):
     docker_dir = 'docker'
     docker_name = 'resu/alpine-acceptance-test-run'
     shutil.rmtree(docker_dir, ignore_errors=True)
     os.mkdir(docker_dir)
-    shutil.copy('../build/resu', os.path.join(docker_dir, 'resu'))
+    shutil.copy('../build-alpine/resu-alpine', os.path.join(docker_dir, 'resu-alpine'))
     with open(os.path.join(docker_dir, 'Dockerfile'), 'w') as f:
         f.write("""
 FROM alpine
@@ -52,7 +52,7 @@ RUN wget https://github.com/krallin/tini/releases/download/{}/tini-static -O /ti
  && chmod +x /tini
 ENTRYPOINT ["/tini", "--"]
 
-ADD resu-static /sbin/resu
+ADD resu-alpine /sbin/resu
 """.format(TINI_VERSION))
     assert 0 == sp.call(['docker', 'build', '-t', docker_name, docker_dir], stdout=sp.PIPE)
     context.docker_name = docker_name

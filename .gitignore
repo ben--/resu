@@ -1,4 +1,5 @@
 /build
+/build-alpine
 /acceptance-test
 /unit-test
 

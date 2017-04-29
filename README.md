@@ -25,6 +25,23 @@ ENTRYPOINT ["/sbin/tini", "--", "/sbin/resu", "nobody:nogroup", "--"]
 
 Then, run your normal application either using the `CMD` Dockerfile directive or by putting a command on the `docker run` command line.
 
+## Usage (Alpine Linux)
+
+A special version is provided for Alpine users that is leverages musl-libc:
+
+```Dockerfile
+FROM debian:8.5
+
+ENV TINI_VERSION v0.9.0
+ENV RESU_VERSION 0.1.1
+
+ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini-static /sbin/tini
+ADD https://github.com/ben--/resu/releases/download/${RESU_VERSION}/resu-alpine /sbin/resu
+RUN chmod +x /sbin/tini /sbin/resu
+
+ENTRYPOINT ["/sbin/tini", "--", "/sbin/resu", "nobody:nogroup", "--"]
+```
+
 ## Arguments
 
 ```shell
