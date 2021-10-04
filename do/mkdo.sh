@@ -4,7 +4,18 @@ export DOCKER_SCAN_SUGGEST=false
 
 run_in_docker() {
     local args=("$@")
-    local docker_run_args=("${args[@]:0:$(( ${#args[@]} - 1 ))}")
+
+    if [ ${args[0]} = --with-docker-in-docker ]; then
+        local docker_in_docker=--with-docker-in-docker
+        local docker_run_args=( \
+            --volume="/var/run/docker.sock:/var/run/docker.sock" \
+            "${args[@]:1:$(( ${#args[@]} - 2 ))}" \
+        )
+    else
+        local docker_in_docker=
+        local docker_run_args=("${args[@]:0:$(( ${#args[@]} - 1 ))}")
+    fi
+
     MKDO_DOCKER_IMAGE="${args[$(( ${#args[@]} - 1 ))]}"
 
     local do_script="$(basename -- ${BASH_SOURCE[1]})"
@@ -17,7 +28,7 @@ run_in_docker() {
             -t "$MKDO_DOCKER_IMAGE" \
             -< "$do_dir/$do_script.Dockerfile"
 
-        create_user "$MKDO_DOCKER_IMAGE"
+        create_user "$MKDO_DOCKER_IMAGE" ${docker_in_docker}
 
         local tty=
         if [[ -t 1 ]]; then
@@ -57,33 +68,13 @@ create_user() {
     fi
     mkdir "$user_docker_dir"
 
-    if [[ ${2-} = --with-docker ]]; then
-        local docker_version=$(docker version --format '{{.Server.Version}}' | sed -e 's/-/~/g')
+    if [[ ${2-} = --with-docker-in-docker ]]; then
+        # FIXME: ensure outer/inner docker version match...
 
-        if [[ "${docker_version}" =~ ~rc[0-9]+$ ]]; then
-            cat > "$user_docker_dir/docker.list" <<EOF
-deb https://apt.dockerproject.org/repo debian-jessie testing
-EOF
-        else
-        cat > "$user_docker_dir/docker.list" <<EOF
-deb https://apt.dockerproject.org/repo debian-jessie main
-EOF
-        fi
         local docker_in_docker="
 RUN apt-get update \
  && apt-get install -y --no-install-recommends \
-        apt-transport-https \
-        ca-certificates \
- && apt-key adv \
-        --keyserver hkp://p80.pool.sks-keyservers.net:80 \
-        --recv-keys 58118E89F3A912897C070ADBF76221572C52609D \
-
-COPY docker.list /etc/apt/sources.list.d/docker.list
-
-RUN apt-get update \
- && apt-cache policy docker-engine \
- && apt-get install -y --no-install-recommends \
-        docker-engine=\$(apt-cache madison docker-engine | awk '{print \$3}' | grep $docker_version)
+        docker.io
 "
         if [[ $(uname -s) = Linux ]]; then
             local outer_docker_gid=$(getent group docker | cut -f 3 -d :)
@@ -91,7 +82,10 @@ RUN apt-get update \
 RUN $(upsert_group $outer_docker_gid docker_in_docker)
 RUN usermod -aG docker_in_docker $user"
         else
-            # FIXME: No docs behind this magical group -- may change with Docker for Mac beta...
+            # FIXME: No docs behind this magical group and not clear whether it
+            #        is relevant any more.
+            # A magical one-time chown of /var/run/docker.sock *inside* a
+            # running docker fixed permissions
             local docker_in_docker="$docker_in_docker
 RUN groupadd --gid 50 docker_in_docker
 RUN usermod -aG docker_in_docker $user"
@@ -103,7 +97,7 @@ FROM $root_docker
 
 RUN getent group $group && groupdel $group || true
 RUN $(upsert_group $gid $group)
-RUN useradd $user --uid $uid --gid $gid
+RUN useradd $user --uid $uid --gid $gid --create-home
 
 ${docker_in_docker-}
 
