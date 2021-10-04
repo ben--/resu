@@ -2,9 +2,8 @@
 
 run_in_docker() {
     local args=("$@")
-    local docker_run_args=("${args[@]:0:$(( ${#args[@]} - 2 ))}")
-    MKDO_DOCKER_IMAGE="${args[$(( ${#args[@]} - 2 ))]}"
-    local docker_dir="${args[$(( ${#args[@]} - 1 ))]}"
+    local docker_run_args=("${args[@]:0:$(( ${#args[@]} - 1 ))}")
+    MKDO_DOCKER_IMAGE="${args[$(( ${#args[@]} - 1 ))]}"
 
     local source_dir="$(dirname "$do_dir")"
 
@@ -13,7 +12,7 @@ run_in_docker() {
         docker build ${DOCKER_QUIET-} \
             --force-rm --rm=true \
             -t "$MKDO_DOCKER_IMAGE" \
-            "$docker_dir"
+            -< "$do_dir/build.Dockerfile"
 
         create_user "$MKDO_DOCKER_IMAGE"
 

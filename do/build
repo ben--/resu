@@ -11,8 +11,7 @@ run_in_docker \
     --volume="$source_dir:$source_dir:ro" \
     --volume="$output_dir:$output_dir:rw" \
     --workdir="$output_dir" \
-    resu/build \
-    $do_dir/build-docker
+    resu/build
 
 cmake ..
 make
