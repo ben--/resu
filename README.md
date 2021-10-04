@@ -1,4 +1,4 @@
-# resu [![Build Status](https://travis-ci.org/ben--/resu.svg?branch=master)](https://travis-ci.org/ben--/resu)
+# resu [![Build Status](https://github.com/ben--/resu/actions/workflows/ci.yml/badge.svg)](https://github.com/ben--/resu/actions/workflows/ci.yml)
 
 Minimal, safe solution for running docker processes as a non-root user.
 
@@ -27,7 +27,7 @@ Then, run your normal application either using the `CMD` Dockerfile directive or
 
 ## Usage (Alpine Linux)
 
-A special version is provided for Alpine users that is leverages musl-libc:
+A special version is provided for Alpine users that leverages musl-libc:
 
 ```Dockerfile
 FROM alpine
