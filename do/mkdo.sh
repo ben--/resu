@@ -62,12 +62,6 @@ create_user() {
     local root_docker="$1"
     local user_docker="$1-user"
 
-    local user_docker_dir="$do_dir/.mkdo-$(echo "$user_docker" | sed -e 's,/,-,g')"
-    if [[ -e "$user_docker_dir" ]]; then
-        rm -rf "$user_docker_dir"
-    fi
-    mkdir "$user_docker_dir"
-
     if [[ ${2-} = --with-docker-in-docker ]]; then
         # FIXME: ensure outer/inner docker version match...
 
@@ -92,7 +86,11 @@ RUN usermod -aG docker_in_docker $user"
         fi
     fi
 
-    cat > "$user_docker_dir/Dockerfile" <<EOF
+    echo "User Docker: $user_docker"
+    docker build ${DOCKER_QUIET-} \
+        --force-rm --rm=true \
+        -t "$user_docker" \
+        -<<EOF
 FROM $root_docker
 
 RUN getent group $group && groupdel $group || true
@@ -103,10 +101,4 @@ ${docker_in_docker-}
 
 USER $user
 EOF
-
-    echo "User Docker: $user_docker"
-    docker build ${DOCKER_QUIET-} \
-        --force-rm --rm=true \
-        -t "$user_docker" \
-        "$user_docker_dir"
 }
