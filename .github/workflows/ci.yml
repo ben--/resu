@@ -4,12 +4,12 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - run: do/build
+      - run: ./do/build
 
   build-alpine:
     runs-on: ubuntu-latest
     steps:
-      - run: do/build-alpine
+      - run: ./do/build-alpine
 
   acceptance-test:
     needs:
@@ -17,4 +17,4 @@ jobs:
       - build-alpine
     runs-on: ubuntu-latest
     steps:
-      - run: do/acceptance-test
+      - run: ./do/acceptance-test
