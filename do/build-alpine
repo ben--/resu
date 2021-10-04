@@ -1,53 +1,17 @@
 #!/bin/bash -eu
 set -o pipefail
 
-DOCKER_IMAGE=resu/build-alpine
+do_dir="$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
+. "$do_dir/mkdo.sh"
 
-if [[ $DOCKER_IMAGE != ${DOCKER_CONTAINER-} ]]; then
-# FIXME: Try this version on a pre docker-for-mac machine...
-#    if ! docker images > /dev/null; then
+source_dir="$(dirname -- "$do_dir")"
+output_dir="$source_dir/build-alpine"
 
-#    if [[ $(uname -s) = Darwin ]]; then
-#        if [[ $(docker-machine status) = Stopped ]]; then
-#            docker-machine start
-#        fi
-#        eval $(docker-machine env)
-#    fi
-
-    # FIXME: May behave strangely on symlinks
-    source_dir="$(dirname "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)")"
-
-    echo -n "Base Docker: "
-    docker build ${DOCKER_QUIET-} \
-           --force-rm --rm=true \
-           -t "$DOCKER_IMAGE" \
-           "$source_dir/do/build-alpine-docker"
-
-    "$source_dir/do/create-user" "$DOCKER_IMAGE"
-
-    output_dir="${source_dir}/build-alpine"
-    if [[ -e "$output_dir" ]]; then
-        echo rm -rf "$output_dir"
-        rm -rf "$output_dir"
-    fi
-    mkdir "$output_dir"
-
-    tty=
-    if [[ -t 1 ]]; then
-        tty=-t
-    fi
-    docker run $tty \
-           --env DOCKER_CONTAINER=$DOCKER_IMAGE \
-           --env "source_dir=$source_dir" \
-           --rm \
-           --sig-proxy=true \
-           --volume="$source_dir:$source_dir:ro" \
-           --volume="$output_dir:$output_dir:rw" \
-           --workdir="$output_dir" \
-           $DOCKER_IMAGE-user \
-           "$source_dir/do/build-alpine"
-    exit $?
-fi
+run_in_docker \
+    --volume="$source_dir:$source_dir:ro" \
+    --volume="$output_dir:$output_dir:rw" \
+    --workdir="$output_dir" \
+    resu/build-alpine
 
 cmake -DRESU_EXECUTABLE:STRING=resu-alpine ..
 make
