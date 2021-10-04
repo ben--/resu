@@ -8,7 +8,7 @@ import subprocess as sp
 def step_impl(context, command):
     args = shlex.split(command)
     p = sp.Popen(['docker', 'run', '--rm', context.docker_name] + args,
-                 stdout=sp.PIPE, stderr=sp.PIPE)
+                 stdout=sp.PIPE, stderr=sp.PIPE, text=True)
     context.stdout, context.stderr = p.communicate()
     context.returncode = p.returncode
 

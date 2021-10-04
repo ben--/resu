@@ -25,32 +25,10 @@ fi
 mkdir "$user_docker_dir"
 
 if [[ ${2-} = --with-docker ]]; then
-    docker_version=$(docker version --format '{{.Server.Version}}' | sed -e 's/-/~/g')
-
-    if [[ "${docker_version}" =~ ~rc[0-9]+$ ]]; then
-        cat > "$user_docker_dir/docker.list" <<EOF
-deb https://apt.dockerproject.org/repo debian-jessie testing
-EOF
-    else
-        cat > "$user_docker_dir/docker.list" <<EOF
-deb https://apt.dockerproject.org/repo debian-jessie main
-EOF
-    fi
     docker_in_docker="
 RUN apt-get update \
  && apt-get install -y --no-install-recommends \
-        apt-transport-https \
-        ca-certificates \
- && apt-key adv \
-        --keyserver hkp://p80.pool.sks-keyservers.net:80 \
-        --recv-keys 58118E89F3A912897C070ADBF76221572C52609D \
-
-COPY docker.list /etc/apt/sources.list.d/docker.list
-
-RUN apt-get update \
- && apt-cache policy docker-engine \
- && apt-get install -y --no-install-recommends \
-        docker-engine=\$(apt-cache madison docker-engine | awk '{print \$3}' | grep $docker_version)
+        docker.io
 "
     if [[ $(uname -s) = Linux ]]; then
         outer_docker_gid=$(getent group docker | cut -f 3 -d :)
@@ -70,7 +48,7 @@ FROM $root_docker
 
 RUN getent group $group && groupdel $group || true
 RUN $(upsert_group $gid $group)
-RUN useradd $user --uid $uid --gid $gid
+RUN useradd $user --uid $uid --gid $gid --create-home
 
 ${docker_in_docker-}
 

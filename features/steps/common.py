@@ -14,7 +14,7 @@ def step_impl(context):
     shutil.copy('../build/resu', os.path.join(docker_dir, 'resu'))
     with open(os.path.join(docker_dir, 'Dockerfile'), 'w') as f:
         f.write("""
-FROM debian:8.5
+FROM debian:11.0
 
 RUN apt-get update \
  && apt-get install -y --no-install-recommends \
@@ -29,7 +29,7 @@ ENTRYPOINT ["/tini", "--"]
 
 ADD resu /sbin/resu
 """.format(TINI_VERSION))
-    assert 0 == sp.call(['docker', 'build', '-t', docker_name, docker_dir], stdout=sp.PIPE)
+    assert 0 == sp.call(['docker', 'build', '-q', '-t', docker_name, docker_dir], stdout=sp.PIPE)
     context.docker_name = docker_name
 
 @given(u'an Alpine base image with resu and tini')
@@ -41,7 +41,7 @@ def step_impl(context):
     shutil.copy('../build-alpine/resu-alpine', os.path.join(docker_dir, 'resu-alpine'))
     with open(os.path.join(docker_dir, 'Dockerfile'), 'w') as f:
         f.write("""
-FROM alpine
+FROM alpine:3.14
 
 RUN apk update \
  && apk add ca-certificates \
@@ -54,7 +54,7 @@ ENTRYPOINT ["/tini", "--"]
 
 ADD resu-alpine /sbin/resu
 """.format(TINI_VERSION))
-    assert 0 == sp.call(['docker', 'build', '-t', docker_name, docker_dir], stdout=sp.PIPE)
+    assert 0 == sp.call(['docker', 'build', '-q', '-t', docker_name, docker_dir], stdout=sp.PIPE)
     context.docker_name = docker_name
 
 @then(u'a "{}" error message is printed')
