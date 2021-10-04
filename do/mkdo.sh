@@ -1,10 +1,13 @@
 #!/bin/bash
 
+export DOCKER_SCAN_SUGGEST=false
+
 run_in_docker() {
     local args=("$@")
     local docker_run_args=("${args[@]:0:$(( ${#args[@]} - 1 ))}")
     MKDO_DOCKER_IMAGE="${args[$(( ${#args[@]} - 1 ))]}"
 
+    local do_script="$(basename -- ${BASH_SOURCE[1]})"
     local source_dir="$(dirname "$do_dir")"
 
     if [[ $MKDO_DOCKER_IMAGE != ${MKDO_DOCKER_CONTAINER-} ]]; then
@@ -12,11 +15,11 @@ run_in_docker() {
         docker build ${DOCKER_QUIET-} \
             --force-rm --rm=true \
             -t "$MKDO_DOCKER_IMAGE" \
-            -< "$do_dir/build.Dockerfile"
+            -< "$do_dir/$do_script.Dockerfile"
 
         create_user "$MKDO_DOCKER_IMAGE"
 
-        tty=
+        local tty=
         if [[ -t 1 ]]; then
             tty=-t
         fi
@@ -27,7 +30,7 @@ run_in_docker() {
             --sig-proxy=true \
             "${docker_run_args[@]}" \
             "$MKDO_DOCKER_IMAGE"-user \
-            "$do_dir/build"
+            "$do_dir/$do_script"
         exit $?
     fi
 }
