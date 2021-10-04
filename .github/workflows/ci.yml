@@ -4,12 +4,22 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - run: ./do/build
+      - uses: actions/checkout@v2
+      - run: do/build
+      - uses: actions/upload-artifact@v2
+        with:
+          name: resu
+          path: build/resu
 
   build-alpine:
     runs-on: ubuntu-latest
     steps:
-      - run: ./do/build-alpine
+      - uses: actions/checkout@v2
+      - run: do/build-alpine
+      - uses: actions/upload-artifact@v2
+        with:
+          name: resu-alpine
+          path: build-alpine/resu-alpine
 
   acceptance-test:
     needs:
@@ -17,4 +27,18 @@ jobs:
       - build-alpine
     runs-on: ubuntu-latest
     steps:
-      - run: ./do/acceptance-test
+      - uses: actions/checkout@v2
+
+      - uses: actions/download-artifact@v2
+        with:
+          name: resu
+          path: build/resu
+      - run: chmod 755 build/resu
+
+      - uses: actions/download-artifact@v2
+        with:
+          name: resu-alpine
+          path: build-alpine/resu-alpine
+      - run: chmod 755 build-alpine/resu-alpine
+
+      - run: do/acceptance-test
