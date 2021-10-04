@@ -1,0 +1,20 @@
+name: ci
+on: [push]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - run: do/build
+
+  build-alpine:
+    runs-on: ubuntu-latest
+    steps:
+      - run: do/build-alpine
+
+  acceptance-test:
+    needs:
+      - build
+      - build-alpine
+    runs-on: ubuntu-latest
+    steps:
+      - run: do/acceptance-test
