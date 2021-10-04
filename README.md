@@ -11,10 +11,10 @@ The combination can be used for safer server management or to ensure created fil
 First, instrument your favorite, minimalist docker image by installing `tini` and `resu` and using them as your Docker's entrypoint:
 
 ```Dockerfile
-FROM debian:8.5
+FROM debian:11.0
 
-ENV TINI_VERSION v0.14.0
-ENV RESU_VERSION 0.2.0
+ENV TINI_VERSION v0.19.0
+ENV RESU_VERSION 0.3.0
 
 ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /sbin/tini
 ADD https://github.com/ben--/resu/releases/download/${RESU_VERSION}/resu /sbin/resu
@@ -32,8 +32,8 @@ A special version is provided for Alpine users that leverages musl-libc:
 ```Dockerfile
 FROM alpine
 
-ENV TINI_VERSION v0.14.0
-ENV RESU_VERSION 0.2.0
+ENV TINI_VERSION v0.19.0
+ENV RESU_VERSION 0.3.0
 
 ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini-static /sbin/tini
 ADD https://github.com/ben--/resu/releases/download/${RESU_VERSION}/resu-alpine /sbin/resu
