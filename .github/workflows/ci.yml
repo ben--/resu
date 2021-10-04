@@ -32,13 +32,13 @@ jobs:
       - uses: actions/download-artifact@v2
         with:
           name: resu
-          path: build/resu
+          path: build
       - run: chmod 755 build/resu
 
       - uses: actions/download-artifact@v2
         with:
           name: resu-alpine
-          path: build-alpine/resu-alpine
+          path: build-alpine
       - run: chmod 755 build-alpine/resu-alpine
 
       - run: do/acceptance-test
