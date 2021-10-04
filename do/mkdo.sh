@@ -8,7 +8,7 @@ run_in_docker() {
     local source_dir="$(dirname "$do_dir")"
 
     if [[ $MKDO_DOCKER_IMAGE != ${MKDO_DOCKER_CONTAINER-} ]]; then
-        echo -n "Base Docker: "
+        echo "Base Docker: $MKDO_DOCKER_IMAGE"
         docker build ${DOCKER_QUIET-} \
             --force-rm --rm=true \
             -t "$MKDO_DOCKER_IMAGE" \
@@ -88,7 +88,7 @@ RUN apt-get update \
 RUN $(upsert_group $outer_docker_gid docker_in_docker)
 RUN usermod -aG docker_in_docker $user"
         else
-        # FIXME: No docs behind this magical group -- may change with Docker for Mac beta...
+            # FIXME: No docs behind this magical group -- may change with Docker for Mac beta...
             local docker_in_docker="$docker_in_docker
 RUN groupadd --gid 50 docker_in_docker
 RUN usermod -aG docker_in_docker $user"
@@ -107,7 +107,7 @@ ${docker_in_docker-}
 USER $user
 EOF
 
-    echo -n "User Docker: "
+    echo "User Docker: $user_docker"
     docker build ${DOCKER_QUIET-} \
         --force-rm --rm=true \
         -t "$user_docker" \
